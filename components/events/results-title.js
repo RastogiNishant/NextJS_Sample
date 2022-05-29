@@ -1,8 +1,7 @@
-import Button from '../ui/button';
-import classes from './results-title.module.css';
+import Button from 'components/ui/button';
+import classes from 'components/events/results-title.module.css';
 
 function ResultsTitle({ date }) {
-
   const humanReadableDate = new Date(date).toLocaleDateString('en-US', {
     month: 'long',
     year: 'numeric',
@@ -11,7 +10,7 @@ function ResultsTitle({ date }) {
   return (
     <section className={classes.title}>
       <h1>Events in {humanReadableDate}</h1>
-      <Button link='/events'>Show all events</Button>
+      <Button link="/events">Show all events</Button>
     </section>
   );
 }
