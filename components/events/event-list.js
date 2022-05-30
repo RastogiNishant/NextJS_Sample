@@ -3,7 +3,7 @@ import classes from 'components/events/event-list.module.css';
 
 const EventList = ({ items }) => {
   return (
-    <ul className={classes.item} style={{ padding: 0 }}>
+    <ul className={classes.item}>
       {items.map((event) => (
         <EventItem
           key={event.id}

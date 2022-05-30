@@ -1,26 +1,33 @@
-import path from 'path';
-import fs from 'fs/promises';
-import { getFeaturedEvents } from 'dummy-data';
 import EventList from 'components/events/event-list';
+import { getAllEvents } from 'helpers/apiUtils';
 
-const Homepage = (props) => {
-  console.log('props', props);
-  const featuredEvents = getFeaturedEvents();
+const Homepage = ({ events }) => {
+  console.log('data', events);
+
+  if (!events) {
+    <div>Something went wrong</div>;
+  }
+
+  if (events.length === 0) {
+    <div>Loading...</div>;
+  }
+
   return (
     <div>
-      <EventList items={featuredEvents} />
+      <EventList items={events} />
     </div>
   );
 };
 
 export async function getStaticProps() {
-  const filePath = path.join(process.cwd(), 'data', 'dummy-data.json');
-  const jsonData = await fs.readFile(filePath);
-  const data = JSON.parse(jsonData);
-  console.log('(Re)-Generating...', data);
+  const allEvents = await getAllEvents();
+
+  if (allEvents?.length === 0) {
+    return { notFound: true };
+  }
   return {
     props: {
-      products: { ...data.data },
+      events: [...allEvents.filter(({ isFeatured }) => isFeatured)],
     },
     revalidate: 10, // re-generate the page on given seconds in production only
   };

@@ -11,7 +11,7 @@ const EventItem = ({ title, image, date, location, id }) => {
     year: 'numeric',
   });
 
-  const formattedAddress = location.replace(', ', '\n');
+  const formattedAddress = location?.replace(', ', '\n');
   const exploreLink = `/events/${id}`;
 
   return (
