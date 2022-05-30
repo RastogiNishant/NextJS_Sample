@@ -1,5 +1,5 @@
 import EventList from 'components/events/event-list';
-import { getAllEvents } from 'helpers/apiUtils';
+import { getFeaturedEvents } from 'helpers/apiUtils';
 
 const Homepage = ({ events }) => {
   console.log('data', events);
@@ -20,7 +20,7 @@ const Homepage = ({ events }) => {
 };
 
 export async function getStaticProps() {
-  const allEvents = await getAllEvents();
+  const allEvents = await getFeaturedEvents();
 
   if (allEvents?.length === 0) {
     return { notFound: true };
@@ -29,7 +29,7 @@ export async function getStaticProps() {
     props: {
       events: [...allEvents.filter(({ isFeatured }) => isFeatured)],
     },
-    revalidate: 10, // re-generate the page on given seconds in production only
+    revalidate: 1800, // re-generate the page on given seconds in production only (1800 - Half Hour)
   };
 }
 
