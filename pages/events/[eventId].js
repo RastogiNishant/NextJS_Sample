@@ -1,4 +1,5 @@
 import { Fragment, useEffect, useState } from 'react';
+import Head from 'next/head';
 import { getAllEvents, getEventById } from 'helpers/apiUtils';
 import EventSummary from 'components/event-detail/event-summary';
 import EventLogistics from 'components/event-detail/event-logistics';
@@ -7,26 +8,53 @@ import ErrorAlert from 'components/ui/error-alert';
 
 const EventDetailPage = ({ event }) => {
   const [isLoading, setIsLoading] = useState(true);
-  console.log('events', event);
 
   useEffect(() => {
     setIsLoading(false);
   }, []);
 
+  let pageHead = (
+    <Head>
+      <title>Events</title>
+      <meta name="description" content="Event details" />
+    </Head>
+  );
+
   if (isLoading) {
-    return <>Loading...</>;
+    return (
+      <>
+        {pageHead}
+        <div>Loading...</div>
+      </>
+    );
   }
 
-  if (!event) {
+  pageHead = (
+    <Head>
+      <title>No Events</title>
+      <meta name="description" content="No Events Found" />
+    </Head>
+  );
+
+  if (!event || !event.title) {
     return (
       <ErrorAlert>
+        {pageHead}
         <p>No Event Found!</p>
       </ErrorAlert>
     );
   }
 
+  pageHead = (
+    <Head>
+      <title>{event.title}</title>
+      <meta name="description" content={event.description} />
+    </Head>
+  );
+
   return (
     <Fragment>
+      {pageHead}
       <EventSummary title={event.title} />
       <EventLogistics
         date={event.date}

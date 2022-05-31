@@ -1,4 +1,5 @@
 import { Fragment } from 'react';
+import Head from 'next/head';
 import EventList from 'components/events/event-list';
 import EventsSearch from 'components/events/events-search';
 import { getAllEvents } from 'helpers/apiUtils';
@@ -6,6 +7,10 @@ import { getAllEvents } from 'helpers/apiUtils';
 const AllEventsPage = ({ events }) => {
   return (
     <Fragment>
+      <Head>
+        <title>All Events</title>
+        <meta name="description" content="Events which are featured recently" />
+      </Head>
       <EventsSearch />
       <EventList items={events} />
     </Fragment>

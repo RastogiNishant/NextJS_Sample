@@ -1,7 +1,6 @@
-import classes from './logistics-item.module.css';
+import classes from 'components/event-detail/logistics-item.module.css';
 
 const LogisticsItem = ({ icon: Icon, children }) => {
-
   return (
     <li className={classes.item}>
       <span className={classes.icon}>
@@ -10,6 +9,6 @@ const LogisticsItem = ({ icon: Icon, children }) => {
       <span className={classes.content}>{children}</span>
     </li>
   );
-}
+};
 
 export default LogisticsItem;
