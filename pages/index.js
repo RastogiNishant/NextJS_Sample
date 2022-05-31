@@ -2,8 +2,6 @@ import EventList from 'components/events/event-list';
 import { getFeaturedEvents } from 'helpers/apiUtils';
 
 const Homepage = ({ events }) => {
-  console.log('data', events);
-
   if (!events) {
     <div>Something went wrong</div>;
   }

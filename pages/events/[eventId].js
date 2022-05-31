@@ -69,6 +69,6 @@ export const getStaticPaths = async () => {
         eventId: each.id,
       },
     })),
-    fallback: false,
+    fallback: 'blocking',
   };
 };

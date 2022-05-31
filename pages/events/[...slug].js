@@ -1,26 +1,47 @@
-import { Fragment } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { getFilteredEvents } from 'dummy-data';
+import useSWR from 'swr';
 import EventList from 'components/events/event-list';
 import ResultTitle from 'components/events/results-title';
 import ErrorAlert from 'components/ui/error-alert';
 import Button from 'components/ui/button';
 
+const fetcher = (url) => fetch(url).then((req) => req.json());
+
 const FilteredEventsPage = () => {
   const router = useRouter();
-  const filteredData = router.query.slug;
-  if (!filteredData) {
+  const [events, setEvents] = useState([]);
+  const filterData = router.query.slug;
+
+  console.log('filterData', filterData);
+  const { data, error } = useSWR(
+    'https://nextjs-sample-41a78-default-rtdb.asia-southeast1.firebasedatabase.app/events.json',
+    fetcher
+  );
+
+  useEffect(() => {
+    if (data) {
+      const allEvents = [];
+      for (const key in data) {
+        allEvents.push({
+          id: key,
+          ...data[key],
+        });
+      }
+      setEvents(allEvents);
+    }
+  }, [data]);
+
+  if (!events || !filterData) {
     return (
       <Fragment>
-        <ErrorAlert>
-          <p className="center">Loading...</p>
-        </ErrorAlert>
+        <p className="center">Loading...</p>
       </Fragment>
     );
   }
 
-  const numYear = +filteredData[0];
-  const numMonth = +filteredData[1];
+  const numYear = +filterData[0];
+  const numMonth = +filterData[1];
 
   if (
     isNaN(numYear) ||
@@ -28,7 +49,8 @@ const FilteredEventsPage = () => {
     numYear > 2030 ||
     numYear < 2021 ||
     numMonth > 12 ||
-    numMonth < 1
+    numMonth < 1 ||
+    error
   ) {
     return (
       <Fragment>
@@ -42,9 +64,12 @@ const FilteredEventsPage = () => {
     );
   }
 
-  const filteredEvents = getFilteredEvents({
-    year: numYear,
-    month: numMonth,
+  const filteredEvents = events.filter((event) => {
+    const eventDate = new Date(event.date);
+    return (
+      eventDate.getFullYear() === numYear &&
+      eventDate.getMonth() === numMonth - 1
+    );
   });
 
   if (!filteredEvents || filteredEvents.length === 0) {
