@@ -1,21 +1,16 @@
 import classes from 'components/input/comment-list.module.css';
 
-const CommentList = () => {
+const CommentList = ({ items }) => {
   return (
     <ul className={classes.comments}>
-      {/* Render list of comments - fetched from API */}
-      <li>
-        <p>My comment is amazing!</p>
-        <div>
-          By <address>Maximilian</address>
-        </div>
-      </li>
-      <li>
-        <p>My comment is amazing!</p>
-        <div>
-          By <address>Maximilian</address>
-        </div>
-      </li>
+      {items.map((each) => (
+        <li key={each._id}>
+          <p>{each.text}</p>
+          <div>
+            By <address>{each.name}</address>
+          </div>
+        </li>
+      ))}
     </ul>
   );
 };

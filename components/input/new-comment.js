@@ -2,6 +2,8 @@ import { useRef, useState } from 'react';
 import classes from 'components/input/new-comment.module.css';
 
 const NewComment = ({ onAddComment }) => {
+  console.log('onAddComment', onAddComment);
+
   const [isInvalid, setIsInvalid] = useState(false);
 
   const emailInputRef = useRef();
@@ -36,7 +38,7 @@ const NewComment = ({ onAddComment }) => {
   };
 
   return (
-    <form className={classes.form}>
+    <form className={classes.form} onSubmit={sendCommentHandler}>
       <div className={classes.row}>
         <div className={classes.control}>
           <label htmlFor="email">Your email</label>

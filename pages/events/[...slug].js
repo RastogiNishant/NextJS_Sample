@@ -14,7 +14,6 @@ const FilteredEventsPage = () => {
   const [events, setEvents] = useState([]);
   const filterData = router.query.slug;
 
-  console.log('filterData', filterData);
   const { data, error } = useSWR(
     'https://nextjs-sample-41a78-default-rtdb.asia-southeast1.firebasedatabase.app/events.json',
     fetcher
