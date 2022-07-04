@@ -1,10 +1,12 @@
 import { MongoClient } from 'mongodb';
+import { getAllDocuments } from 'helpers/db-util';
+
 const handler = async (req, res) => {
   const eventId = req.query.eventId;
   console.log('eventId', eventId);
 
   const client = await MongoClient.connect(
-    'mongodb+srv://nish:ze7WjkPLuqtM1uMV@cluster0.zwsnd.mongodb.net/events?retryWrites=true&w=majority'
+    `${process.env.DB_CONNECTION}events?retryWrites=true&w=majority`
   );
   if (req.method === 'POST') {
     const { email, name, text } = req.body;
@@ -29,18 +31,18 @@ const handler = async (req, res) => {
     };
 
     const result = await db.collection('comments').insertOne(newComment);
-    console.log('comment', result);
     newComment.id = result.insertedId;
     res.status(201).json({ message: 'Comment Added', comment: newComment });
   }
 
   if (req.method === 'GET') {
     const db = client.db();
-    const documents = await db
-      .collection('comments')
-      .find()
-      .sort({ _id: -1 })
-      .toArray();
+    const documents = getAllDocuments(
+      db,
+      'comments',
+      { _id: -1 },
+      { eventId: eventId }
+    );
     res.status(200).json({ comments: documents });
   }
   client.close();

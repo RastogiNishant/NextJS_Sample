@@ -1,5 +1,17 @@
 import { MongoClient } from 'mongodb';
 
+const connectDatabase = async () => {
+  const client = await MongoClient.connect(
+    `${process.env.DB_CONNECTION}events?retryWrites=true&w=majority`
+  );
+  return client;
+};
+
+const insertDocument = async (client, document) => {
+  const db = client.db();
+  await db.collection('newsletter').insertOne(document);
+};
+
 const handler = async (req, res) => {
   if (req.method === 'POST') {
     const userEmail = req.body.email;
@@ -8,14 +20,18 @@ const handler = async (req, res) => {
       res.status(422).json({ message: 'Invalid Email Address' });
       return;
     }
-    const client = await MongoClient.connect(
-      'mongodb+srv://nish:ze7WjkPLuqtM1uMV@cluster0.zwsnd.mongodb.net/events?retryWrites=true&w=majority'
-    );
-    const db = client.db();
-    await db.collection('newsletter').insertOne({
-      email: userEmail,
-    });
-    client.close();
+    let client;
+    try {
+      client = await connectDatabase();
+    } catch (error) {
+      res.status(500).json({ message: 'Connection to the database failed!' });
+    }
+    try {
+      await insertDocument(client, { email, userEmail });
+      client.close();
+    } catch (error) {
+      res.status(500).json({ message: 'Inserting data failed!' });
+    }
 
     console.log(userEmail);
     res.status(201).json({ message: 'User Signed Up' });

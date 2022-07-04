@@ -13,7 +13,10 @@ const Comments = ({ eventId }) => {
         method: 'GET',
       })
         .then((response) => response.json())
-        .then((data) => setComments(data.comments));
+        .then((data) => {
+          console.log('data', data);
+          setComments(data?.comments);
+        });
     }
   }, [eventId, showComments]);
 
